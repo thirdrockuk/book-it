@@ -1,4 +1,4 @@
-# Bookit
+# Book-it
 
 A full-stack event booking system built with **FastAPI** (backend) and **React + Vite** (frontend), modelled after Ticket Tailor. Events have ticket types with age-banded pricing — attendee prices are resolved automatically from date of birth.
 
@@ -39,7 +39,7 @@ A full-stack event booking system built with **FastAPI** (backend) and **React +
 
 ```bash
 git clone https://github.com/thirdrockuk/book-it.git
-cd bookit
+cd book-it
 ```
 
 Copy the backend env file:
