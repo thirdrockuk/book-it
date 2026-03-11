@@ -38,7 +38,7 @@ A full-stack event booking system built with **FastAPI** (backend) and **React +
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/davesmallnhs/bookit.git
+git clone https://github.com/thirdrockuk/book-it.git
 cd bookit
 ```
 
