@@ -8,26 +8,40 @@ interface Props {
 export default function EventCard({ event }: Props) {
   const start = new Date(event.starts_at);
   return (
-    <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition">
-      <h2 className="text-xl font-semibold text-gray-900 mb-1">{event.title}</h2>
-      <p className="text-sm text-gray-500 mb-2">
-        {start.toLocaleDateString('en-GB', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
-      </p>
-      {event.location && (
-        <p className="text-sm text-gray-600 mb-3">📍 {event.location}</p>
+    <article className="group overflow-hidden rounded-xl border border-gray-700 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      {event.banner_image_url ? (
+        <img
+          src={event.banner_image_url}
+          alt={event.title}
+          className="h-44 w-full object-cover"
+        />
+      ) : (
+        <div className="h-44 w-full bg-gradient-to-br from-indigo-100 via-white to-sky-100" />
       )}
-      <p className="text-gray-700 text-sm line-clamp-2 mb-4">{event.description}</p>
-      <Link
-        to={`/events/${event.id}`}
-        className="inline-block bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700"
-      >
-        View Details
-      </Link>
-    </div>
+
+      <div className="p-5">
+        <p className="mb-2 inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
+          {start.toLocaleDateString('en-GB', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </p>
+
+        <h2 className="text-xl font-semibold text-gray-900">{event.title}</h2>
+
+        {event.location && <p className="mt-1 text-sm text-gray-700">{event.location}</p>}
+
+        <p className="mt-3 line-clamp-3 text-sm text-gray-700">{event.description}</p>
+
+        <Link
+          to={`/events/${event.id}`}
+          className="mt-5 inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
+        >
+          View details
+        </Link>
+      </div>
+    </article>
   );
 }

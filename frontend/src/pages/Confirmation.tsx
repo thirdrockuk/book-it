@@ -13,16 +13,16 @@ export default function Confirmation() {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <div className="text-6xl mb-4">🎉</div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
-      <p className="text-gray-500 mb-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Booking confirmed</h1>
+      <p className="text-gray-700 mb-6">
         Order <span className="font-mono font-semibold">{order.order_number}</span>
       </p>
 
       <div className="bg-white rounded-lg border p-6 text-left mb-6">
-        <h2 className="font-semibold text-gray-800 mb-4">Attendees</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">Attendees</h2>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-gray-700 border-b">
               <th className="pb-2">Name</th>
               <th className="pb-2 text-right">Price</th>
             </tr>
@@ -44,15 +44,15 @@ export default function Confirmation() {
         </table>
       </div>
 
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-gray-700 mb-6">
         A confirmation email has been sent to <strong>{order.booker_email}</strong>.
       </p>
 
       <Link
         to="/"
-        className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700"
+        className="inline-block bg-sky-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-sky-700"
       >
-        Browse More Events
+        Browse more events
       </Link>
     </div>
   );

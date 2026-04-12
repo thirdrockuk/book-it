@@ -207,10 +207,10 @@ export default function AdminEventAttendeeReport() {
   return (
     <div>
       <div className="mb-6">
-        <Link to="/admin/events" className="text-sm text-indigo-600 hover:underline">
-          {'<-'} Back to Events
+        <Link to={`/admin/events/${eventId}`} className="text-sm text-sky-600 hover:underline">
+          ← Back to event
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-1">Attendee Age Report</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mt-1">Attendee age report</h1>
         <p className="text-sm text-gray-500 mt-1">
           {report.event_title} | Event date: {formatDate(report.event_starts_at)}
         </p>
@@ -218,7 +218,7 @@ export default function AdminEventAttendeeReport() {
 
       <div className="bg-white border rounded-lg p-5 mb-4">
         <div className="flex items-center justify-between gap-4 flex-wrap mb-3">
-          <h2 className="font-semibold text-gray-800">Report Scope</h2>
+          <h2 className="font-semibold text-gray-800">Report scope</h2>
           <label className="inline-flex items-center gap-2 text-sm text-gray-700">
             <input
               type="checkbox"
@@ -237,7 +237,7 @@ export default function AdminEventAttendeeReport() {
 
       <div className="bg-white border rounded-lg p-5 mb-4">
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="font-semibold text-gray-800">Age Tabs</h2>
+          <h2 className="font-semibold text-gray-800">Age tabs</h2>
           <div className="flex items-center gap-2">
             {isDirty && (
               <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
@@ -247,7 +247,7 @@ export default function AdminEventAttendeeReport() {
             <button
               type="button"
               onClick={addTab}
-              className="text-sm px-3 py-1.5 rounded bg-indigo-600 text-white hover:bg-indigo-700"
+              className="text-sm px-3 py-1.5 rounded bg-sky-600 text-white hover:bg-sky-700"
             >
               + Add Tab
             </button>
@@ -257,7 +257,7 @@ export default function AdminEventAttendeeReport() {
               disabled={!isDirty || isSaving}
               className="text-sm px-3 py-1.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200 disabled:hover:bg-transparent"
             >
-              {isSaving ? 'Saving...' : 'Save Tabs'}
+              {isSaving ? 'Saving...' : 'Save tabs'}
             </button>
           </div>
         </div>
@@ -317,7 +317,7 @@ export default function AdminEventAttendeeReport() {
               onClick={() => setActiveTabId(tab.id)}
               className={`px-3 py-1.5 rounded text-sm border ${
                 tab.id === activeTabId
-                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  ? 'bg-sky-600 text-white border-sky-600'
                   : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
               }`}
             >
@@ -357,7 +357,7 @@ export default function AdminEventAttendeeReport() {
                       <div className="flex items-center gap-2">
                         <Link
                           to={`/admin/orders/${attendee.order_id}`}
-                          className="text-indigo-600 hover:underline text-xs font-mono"
+                          className="text-sky-600 hover:underline text-xs font-mono"
                         >
                           {attendee.order_number}
                         </Link>

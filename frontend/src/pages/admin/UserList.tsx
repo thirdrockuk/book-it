@@ -19,12 +19,12 @@ export default function AdminUserList() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Admin Users</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Admin users</h1>
         <Link
           to="/admin/users/new"
-          className="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700"
+          className="bg-sky-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-sky-700"
         >
-          + New User
+          + New user
         </Link>
       </div>
 
@@ -47,7 +47,7 @@ export default function AdminUserList() {
                   <td className="px-4 py-3 font-medium text-gray-900">
                     {user.email}
                     {currentUser?.email === user.email && (
-                      <span className="ml-2 text-xs text-indigo-500 font-normal">(you)</span>
+                      <span className="ml-2 text-xs text-sky-500 font-normal">(you)</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -67,14 +67,14 @@ export default function AdminUserList() {
                   <td className="px-4 py-3 text-right space-x-3">
                     <Link
                       to={`/admin/users/${user.id}/edit`}
-                      className="text-indigo-600 hover:underline text-xs"
+                      className="inline-block bg-sky-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
                     >
-                      Edit
+                      Edit user
                     </Link>
                     {currentUser?.email !== user.email && (
                       <button
                         onClick={() => handleDelete(user.id)}
-                        className="text-red-500 hover:underline text-xs"
+                        className="inline-block bg-red-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ml-2"
                       >
                         Delete
                       </button>

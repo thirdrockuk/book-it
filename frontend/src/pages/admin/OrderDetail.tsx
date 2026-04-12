@@ -189,7 +189,7 @@ export default function AdminOrderDetail() {
     <div className="max-w-2xl">
       <button
         onClick={() => navigate('/admin/orders')}
-        className="text-sm text-indigo-600 hover:underline mb-4 block"
+        className="text-sm text-sky-600 hover:underline mb-4 block"
       >
         ← Back to orders
       </button>
@@ -206,7 +206,7 @@ export default function AdminOrderDetail() {
               href={`/booking/${order.view_token}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-indigo-600 hover:underline font-mono"
+              className="text-sm text-sky-600 hover:underline font-mono"
             >
               {`${window.location.origin}/booking/${order.view_token}`}
             </a>
@@ -264,7 +264,7 @@ export default function AdminOrderDetail() {
                 <td className="py-2 text-gray-500">
                   {item.price_band_label ?? '—'}
                   {item.price_band_qualifier && (
-                    <span className="ml-1 px-1.5 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs">
+                    <span className="ml-1 px-1.5 py-0.5 bg-sky-100 text-sky-700 rounded text-xs">
                       {item.price_band_qualifier}
                     </span>
                   )}
@@ -300,7 +300,7 @@ export default function AdminOrderDetail() {
                             type="button"
                             onClick={() => handleResetItemPrice(item.id)}
                             disabled={savingPriceItemId === item.id}
-                            className="text-xs px-2 py-1 rounded border border-indigo-300 text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+                            className="text-xs px-2 py-1 rounded border border-sky-300 text-sky-700 hover:bg-sky-50 disabled:opacity-50"
                           >
                             Reset
                           </button>
@@ -525,7 +525,7 @@ export default function AdminOrderDetail() {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-indigo-600 text-white px-5 py-1.5 rounded text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+              className="bg-sky-600 text-white px-5 py-1.5 rounded text-sm font-medium hover:bg-sky-700 disabled:opacity-50"
             >
               {submitting ? 'Saving…' : 'Record Payment'}
             </button>

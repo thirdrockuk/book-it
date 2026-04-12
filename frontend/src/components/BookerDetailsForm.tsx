@@ -18,10 +18,10 @@ export default function BookerDetailsForm({ details, onChange }: Props) {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Full name</label>
         <input
           type="text"
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
           value={details.booker_name}
           onChange={(e) => update('booker_name', e.target.value)}
           placeholder="Your full name"
@@ -29,10 +29,10 @@ export default function BookerDetailsForm({ details, onChange }: Props) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
         <input
           type="email"
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
           value={details.booker_email}
           onChange={(e) => update('booker_email', e.target.value)}
           placeholder="your@email.com"
@@ -40,10 +40,10 @@ export default function BookerDetailsForm({ details, onChange }: Props) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm email</label>
         <input
           type="email"
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
           value={details.booker_email_confirm}
           onChange={(e) => update('booker_email_confirm', e.target.value)}
           placeholder="Confirm email"
@@ -57,11 +57,11 @@ export default function BookerDetailsForm({ details, onChange }: Props) {
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Phone Number <span className="text-gray-400">(optional)</span>
+          Phone number <span className="text-gray-700">(optional)</span>
         </label>
         <input
           type="tel"
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
           value={details.booker_phone}
           onChange={(e) => update('booker_phone', e.target.value)}
           placeholder="+44..."

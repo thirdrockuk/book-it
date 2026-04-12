@@ -148,17 +148,17 @@ export default function Checkout() {
 
   const steps = [
     { label: 'Attendees', number: 1 },
-    { label: 'Your Details', number: 2 },
-    { label: 'Review & Pay', number: 3 },
+    { label: 'Your details', number: 2 },
+    { label: 'Review and pay', number: 3 },
   ];
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Link to={`/events/${event.id}`} className="text-sm text-indigo-600 hover:underline mb-4 block">
+    <div className="max-w-[60rem] mx-auto">
+      <Link to={`/events/${event.id}`} className="text-sm text-sky-600 hover:underline mb-4 block">
         ← Back to event
       </Link>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">{event.title}</h1>
-      <p className="text-gray-500 text-sm mb-6">
+      <p className="text-gray-700 text-sm mb-6">
         {eventStart.toLocaleDateString('en-GB', {
           weekday: 'long',
           year: 'numeric',
@@ -174,20 +174,20 @@ export default function Checkout() {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                 step >= s.number
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-200 text-gray-500'
+                  ? 'bg-sky-600 text-white'
+                  : 'bg-white text-gray-700'
               }`}
             >
               {s.number}
             </div>
             <span
               className={`ml-2 text-sm ${
-                step >= s.number ? 'text-indigo-600 font-medium' : 'text-gray-400'
+                step >= s.number ? 'text-sky-600 font-medium' : 'text-gray-700'
               }`}
             >
               {s.label}
             </span>
-            {i < steps.length - 1 && <div className="mx-4 flex-1 h-px bg-gray-300 w-8" />}
+            {i < steps.length - 1 && <div className="mx-4 flex-1 h-px bg-white w-8" />}
           </div>
         ))}
       </div>
@@ -195,7 +195,7 @@ export default function Checkout() {
       {/* Step 1: Attendees */}
       {step === 1 && (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Add Attendees</h2>
+          <h2 className="text-lg font-semibold mb-4">Add attendees</h2>
           <div className="space-y-4">
             {attendees.map((a, i) => (
               <AttendeeForm
@@ -214,7 +214,7 @@ export default function Checkout() {
           <button
             type="button"
             onClick={addAttendee}
-            className="mt-4 text-sm text-indigo-600 hover:underline"
+            className="mt-4 text-sm text-sky-600 hover:underline"
           >
             + Add another attendee
           </button>
@@ -224,7 +224,7 @@ export default function Checkout() {
             <button
               onClick={() => setStep(2)}
               disabled={!validateStep1()}
-              className="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-sky-600 text-white px-6 py-2 rounded font-medium hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Continue
             </button>
@@ -235,21 +235,21 @@ export default function Checkout() {
       {/* Step 2: Booker details */}
       {step === 2 && (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Your Details</h2>
+          <h2 className="text-lg font-semibold mb-4">Your details</h2>
           <BookerDetailsForm details={booker} onChange={setBooker} />
           <div className="mt-6 flex gap-4">
             <button
               onClick={() => setStep(1)}
-              className="border border-gray-300 px-6 py-2 rounded font-medium text-gray-700 hover:bg-gray-50"
+              className="border border-gray-700 px-6 py-2 rounded font-medium text-gray-700 hover:bg-white"
             >
               Back
             </button>
             <button
               onClick={() => setStep(3)}
               disabled={!validateStep2()}
-              className="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-sky-600 text-white px-6 py-2 rounded font-medium hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Review Order
+              Review order
             </button>
           </div>
         </div>
@@ -258,10 +258,10 @@ export default function Checkout() {
       {/* Step 3: Review */}
       {step === 3 && (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Review &amp; Pay</h2>
+          <h2 className="text-lg font-semibold mb-4">Review and pay</h2>
 
           <div className="bg-white rounded-lg border p-4 mb-4">
-            <h3 className="font-medium text-gray-800 mb-3">Order Summary</h3>
+            <h3 className="font-medium text-gray-700 mb-3">Order summary</h3>
             <OrderSummary
               attendees={attendees}
               ticketTypes={activeTicketTypes}
@@ -270,7 +270,7 @@ export default function Checkout() {
           </div>
 
           <div className="bg-white rounded-lg border p-4 mb-4">
-            <h3 className="font-medium text-gray-800 mb-2">Booker Details</h3>
+            <h3 className="font-medium text-gray-700 mb-2">Booker details</h3>
             <p className="text-sm text-gray-700">{booker.booker_name}</p>
             <p className="text-sm text-gray-700">{booker.booker_email}</p>
             {booker.booker_phone && (
@@ -287,7 +287,7 @@ export default function Checkout() {
           <div className="flex gap-4">
             <button
               onClick={() => setStep(2)}
-              className="border border-gray-300 px-6 py-2 rounded font-medium text-gray-700 hover:bg-gray-50"
+              className="border border-gray-700 px-6 py-2 rounded font-medium text-gray-700 hover:bg-white"
             >
               Back
             </button>
@@ -296,7 +296,7 @@ export default function Checkout() {
               disabled={submitting}
               className="bg-green-600 text-white px-8 py-2 rounded font-semibold hover:bg-green-700 disabled:opacity-50"
             >
-              {submitting ? 'Processing…' : `Complete Booking — ${formatPence(total)}`}
+              {submitting ? 'Processing…' : `Complete booking — ${formatPence(total)}`}
             </button>
           </div>
         </div>

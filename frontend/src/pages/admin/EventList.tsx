@@ -21,9 +21,9 @@ export default function AdminEventList() {
         <h1 className="text-2xl font-bold text-gray-900">Events</h1>
         <Link
           to="/admin/events/new"
-          className="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700"
+          className="bg-sky-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-sky-700"
         >
-          + New Event
+          + New event
         </Link>
       </div>
 
@@ -37,7 +37,7 @@ export default function AdminEventList() {
                 <th className="px-4 py-3 text-left">Title</th>
                 <th className="px-4 py-3 text-left">Date</th>
                 <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Ticket Types</th>
+                <th className="px-4 py-3 text-left">Ticket types</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -54,31 +54,13 @@ export default function AdminEventList() {
                   <td className="px-4 py-3 text-gray-500">
                     {event.ticket_types.length}
                   </td>
-                  <td className="px-4 py-3 text-right space-x-3">
+                  <td className="px-4 py-3 text-right">
                     <Link
-                      to={`/admin/events/${event.id}/edit`}
-                      className="text-indigo-600 hover:underline text-xs"
+                      to={`/admin/events/${event.id}`}
+                      className="inline-block bg-sky-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
                     >
-                      Edit
+                      Manage event
                     </Link>
-                    <Link
-                      to={`/admin/events/${event.id}/ticket-types`}
-                      className="text-green-600 hover:underline text-xs"
-                    >
-                      Ticket Types
-                    </Link>
-                    <Link
-                      to={`/admin/events/${event.id}/attendee-report`}
-                      className="text-blue-600 hover:underline text-xs"
-                    >
-                      Attendee Report
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(event.id)}
-                      className="text-red-500 hover:underline text-xs"
-                    >
-                      Delete
-                    </button>
                   </td>
                 </tr>
               ))}

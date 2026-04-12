@@ -34,10 +34,10 @@ export default function OrderSummary({ attendees, ticketTypes, eventStart }: Pro
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-gray-500">
+          <tr className="border-b text-left text-gray-700">
             <th className="pb-2 font-medium">Attendee</th>
-            <th className="pb-2 font-medium">Ticket Type</th>
-            <th className="pb-2 font-medium">Price Band</th>
+            <th className="pb-2 font-medium">Ticket type</th>
+            <th className="pb-2 font-medium">Price band</th>
             <th className="pb-2 font-medium text-right">Price</th>
           </tr>
         </thead>
@@ -47,12 +47,12 @@ export default function OrderSummary({ attendees, ticketTypes, eventStart }: Pro
               <td className="py-2">
                 <span>{r.attendee.attendee_name || '—'}</span>
                 {r.attendee.dietary_requirements?.trim() && (
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-gray-700 mt-0.5">
                     <span className="font-medium">Dietary:</span> {r.attendee.dietary_requirements.trim()}
                   </p>
                 )}
                 {r.attendee.access_requirements?.trim() && (
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-gray-700 mt-0.5">
                     <span className="font-medium">Access:</span> {r.attendee.access_requirements.trim()}
                   </p>
                 )}
@@ -65,10 +65,10 @@ export default function OrderSummary({ attendees, ticketTypes, eventStart }: Pro
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={3} className="pt-3 font-semibold text-gray-800">
+            <td colSpan={3} className="pt-3 font-semibold text-gray-900">
               Total
             </td>
-            <td className="pt-3 font-semibold text-gray-800 text-right">{formatPence(total)}</td>
+            <td className="pt-3 font-semibold text-gray-900 text-right">{formatPence(total)}</td>
           </tr>
         </tfoot>
       </table>

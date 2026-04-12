@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import EventList from './pages/EventList';
+import PublicHome from './pages/PublicHome';
 import EventDetail from './pages/EventDetail';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
@@ -15,7 +16,9 @@ import AdminTicketTypeForm from './pages/admin/TicketTypeForm';
 import AdminTicketTypeList from './pages/admin/TicketTypeList';
 import AdminOrderList from './pages/admin/OrderList';
 import AdminOrderDetail from './pages/admin/OrderDetail';
+import AdminEventHub from './pages/admin/EventHub';
 import AdminEventAttendeeReport from './pages/admin/EventAttendeeReport';
+import AdminEventOrderList from './pages/admin/EventOrderList';
 import AdminFinanceReport from './pages/admin/FinanceReport';
 import AdminUserList from './pages/admin/UserList';
 import AdminUserForm from './pages/admin/UserForm';
@@ -26,7 +29,8 @@ export default function App() {
       <Routes>
         {/* Public routes */}
         <Route element={<Layout />}>
-          <Route index element={<EventList />} />
+          <Route index element={<PublicHome />} />
+          <Route path="/events" element={<EventList />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/events/:id/checkout" element={<Checkout />} />
           <Route path="/orders/:id/confirmation" element={<Confirmation />} />
@@ -42,14 +46,16 @@ export default function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/events" element={<AdminEventList />} />
             <Route path="/admin/events/new" element={<AdminEventForm />} />
+            <Route path="/admin/events/:id" element={<AdminEventHub />} />
             <Route path="/admin/events/:id/edit" element={<AdminEventForm />} />
             <Route path="/admin/events/:id/ticket-types" element={<AdminTicketTypeList />} />
             <Route path="/admin/events/:id/ticket-types/new" element={<AdminTicketTypeForm />} />
             <Route path="/admin/events/:id/ticket-types/:tid/edit" element={<AdminTicketTypeForm />} />
+            <Route path="/admin/events/:id/orders" element={<AdminEventOrderList />} />
             <Route path="/admin/events/:id/attendee-report" element={<AdminEventAttendeeReport />} />
+            <Route path="/admin/events/:id/finance-report" element={<AdminFinanceReport />} />
             <Route path="/admin/orders" element={<AdminOrderList />} />
             <Route path="/admin/orders/:id" element={<AdminOrderDetail />} />
-            <Route path="/admin/reports/finance" element={<AdminFinanceReport />} />
             <Route path="/admin/users" element={<AdminUserList />} />
             <Route path="/admin/users/new" element={<AdminUserForm />} />
             <Route path="/admin/users/:id/edit" element={<AdminUserForm />} />

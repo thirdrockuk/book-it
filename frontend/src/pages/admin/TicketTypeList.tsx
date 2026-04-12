@@ -23,16 +23,16 @@ export default function AdminTicketTypeList() {
     <div>
       <div className="flex items-start justify-between mb-6">
         <div>
-          <Link to="/admin/events" className="text-sm text-indigo-600 hover:underline">
-            ← Back to Events
+          <Link to={`/admin/events/${eventId}`} className="text-sm text-sky-600 hover:underline">
+            ← Back to event
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mt-1">Ticket Types</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mt-1">Ticket types</h1>
         </div>
         <Link
           to={`/admin/events/${eventId}/ticket-types/new`}
-          className="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700"
+          className="bg-sky-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-sky-700"
         >
-          + New Ticket Type
+          + New ticket type
         </Link>
       </div>
 
@@ -65,16 +65,16 @@ export default function AdminTicketTypeList() {
                     {' · '}Sort order: {tt.sort_order}
                   </p>
                 </div>
-                <div className="flex gap-3 text-sm shrink-0">
+                <div className="flex gap-2 text-sm shrink-0">
                   <Link
                     to={`/admin/events/${eventId}/ticket-types/${tt.id}/edit`}
-                    className="text-indigo-600 hover:underline"
+                    className="inline-block bg-sky-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
                   >
                     Edit
                   </Link>
                   <button
                     onClick={() => handleDelete(tt.id)}
-                    className="text-red-500 hover:underline"
+                    className="inline-block bg-red-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     Delete
                   </button>
@@ -91,16 +91,18 @@ export default function AdminTicketTypeList() {
                     <span>Venue fee</span>
                     <span>Qualifier</span>
                   </div>
-                  {tt.price_bands.map((band) => (
-                    <div key={band.id} className="grid grid-cols-6 gap-2 text-sm text-gray-700 py-0.5">
-                      <span>{band.label}</span>
-                      <span>{band.age_min}</span>
-                      <span>{band.age_max}</span>
-                      <span>{formatPence(band.price_pence)}</span>
-                      <span>{formatPence(band.venue_fee_pence)}</span>
-                      <span>{band.qualifier ?? '—'}</span>
-                    </div>
-                  ))}
+                  {[...tt.price_bands]
+                    .sort((a, b) => b.age_min - a.age_min)
+                    .map((band) => (
+                      <div key={band.id} className="grid grid-cols-6 gap-2 text-sm text-gray-700 py-0.5">
+                        <span>{band.label}</span>
+                        <span>{band.age_min}</span>
+                        <span>{band.age_max}</span>
+                        <span>{formatPence(band.price_pence)}</span>
+                        <span>{formatPence(band.venue_fee_pence)}</span>
+                        <span>{band.qualifier ?? '—'}</span>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

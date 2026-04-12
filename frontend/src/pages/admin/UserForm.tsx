@@ -55,7 +55,7 @@ export default function AdminUserForm() {
 
   return (
     <div className="max-w-lg">
-      <Link to="/admin/users" className="text-sm text-indigo-600 hover:underline">
+      <Link to="/admin/users" className="text-sm text-sky-600 hover:underline">
         ← Back to Users
       </Link>
       <h1 className="text-2xl font-bold text-gray-900 mt-2 mb-6">
@@ -109,7 +109,7 @@ export default function AdminUserForm() {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700"
+            className="bg-sky-600 text-white px-6 py-2 rounded font-medium hover:bg-sky-700"
           >
             {isEditing ? 'Save Changes' : 'Create User'}
           </button>

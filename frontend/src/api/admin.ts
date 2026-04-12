@@ -33,6 +33,17 @@ export function useAdminEvent(id: string | undefined) {
   });
 }
 
+export function useAdminEventOrders(eventId: string | undefined) {
+  return useQuery<Order[]>({
+    queryKey: ['admin', 'events', eventId, 'orders'],
+    queryFn: async () => {
+      const res = await apiClient.get<Order[]>(`/api/admin/events/${eventId}/orders`);
+      return res.data;
+    },
+    enabled: Boolean(eventId),
+  });
+}
+
 export function useAdminOrders(sortDirection: 'desc' | 'asc' = 'desc') {
   return useQuery<Order[]>({
     queryKey: ['admin', 'orders', sortDirection],

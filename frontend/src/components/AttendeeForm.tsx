@@ -84,9 +84,9 @@ export default function AttendeeForm({
   }
 
   return (
-    <div className="border rounded-lg p-4 bg-gray-50">
+    <div className="border rounded-lg p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="font-medium text-gray-800">Attendee {index + 1}</h4>
+        <h4 className="font-medium text-gray-700">Attendee {index + 1}</h4>
         {canRemove && (
           <button
             type="button"
@@ -100,10 +100,10 @@ export default function AttendeeForm({
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Full name</label>
           <input
             type="text"
-            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={attendee.attendee_name}
             onChange={(e) => update('attendee_name', e.target.value)}
             placeholder="Full name"
@@ -112,10 +112,10 @@ export default function AttendeeForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Date of birth</label>
           <input
             type="date"
-            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={attendee.attendee_dob}
             onChange={(e) => update('attendee_dob', e.target.value)}
             required
@@ -123,9 +123,9 @@ export default function AttendeeForm({
         </div>
 
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Ticket Type</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Ticket type</label>
           <select
-            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={attendee.ticket_type_id}
             onChange={(e) => update('ticket_type_id', e.target.value)}
             required
@@ -161,7 +161,7 @@ export default function AttendeeForm({
         <button
           type="button"
           onClick={() => setShowRequirements((prev) => !prev)}
-          className="text-xs text-indigo-600 hover:underline"
+          className="text-xs text-sky-600 hover:underline"
         >
           {showRequirements
             ? 'Hide dietary/access requirements'
@@ -175,7 +175,7 @@ export default function AttendeeForm({
             <label className="block text-xs font-medium text-gray-700 mb-1">Dietary requirements</label>
             <textarea
               rows={2}
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
               value={attendee.dietary_requirements ?? ''}
               onChange={(e) => update('dietary_requirements', e.target.value)}
               placeholder="Optional"
@@ -185,7 +185,7 @@ export default function AttendeeForm({
             <label className="block text-xs font-medium text-gray-700 mb-1">Access requirements</label>
             <textarea
               rows={2}
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
               value={attendee.access_requirements ?? ''}
               onChange={(e) => update('access_requirements', e.target.value)}
               placeholder="Optional"
@@ -195,7 +195,7 @@ export default function AttendeeForm({
       )}
 
       {resolvedBand && (
-        <div className="mt-3 p-2 bg-indigo-50 border border-indigo-200 rounded text-sm text-indigo-800">
+        <div className="mt-3 p-2 bg-sky-50 border border-sky-200 rounded text-sm text-sky-900">
           ✅ {resolvedBand.label} (age {resolvedBand.age_min}–{resolvedBand.age_max}) —{' '}
           <strong>{formatPence(resolvedBand.price_pence)}</strong>
         </div>

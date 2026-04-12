@@ -164,7 +164,7 @@ export default function AdminOrderList() {
                   <td className="px-4 py-3 text-right">
                     <Link
                       to={`/admin/orders/${order.id}`}
-                      className="text-indigo-600 hover:underline text-xs"
+                      className="text-sky-600 hover:underline text-xs"
                     >
                       View
                     </Link>

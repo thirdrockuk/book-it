@@ -7,18 +7,18 @@ interface PriceBandInput {
   label: string;
   age_min: string;
   age_max: string;
-  price_pence: string;
-  venue_fee_pence: string;
+  price_pounds: string;
+  venue_fee_pounds: string;
   qualifier: string;
 }
 
 const MAX_AGE = '100';
 
 const DEFAULT_BANDS: PriceBandInput[] = [
-  { label: 'Adult', age_min: '18', age_max: MAX_AGE, price_pence: '', venue_fee_pence: '', qualifier: '' },
-  { label: 'Child', age_min: '5', age_max: '17', price_pence: '', venue_fee_pence: '', qualifier: '' },
-  { label: 'Toddler', age_min: '1', age_max: '4', price_pence: '', venue_fee_pence: '', qualifier: '' },
-  { label: 'Infant', age_min: '0', age_max: '0', price_pence: '0', venue_fee_pence: '0', qualifier: '' },
+  { label: 'Adult', age_min: '18', age_max: MAX_AGE, price_pounds: '', venue_fee_pounds: '', qualifier: '' },
+  { label: 'Child', age_min: '5', age_max: '17', price_pounds: '', venue_fee_pounds: '', qualifier: '' },
+  { label: 'Toddler', age_min: '1', age_max: '4', price_pounds: '', venue_fee_pounds: '', qualifier: '' },
+  { label: 'Infant', age_min: '0', age_max: '0', price_pounds: '0', venue_fee_pounds: '0', qualifier: '' },
 ];
 
 export default function AdminTicketTypeForm() {
@@ -56,8 +56,8 @@ export default function AdminTicketTypeForm() {
             label: b.label,
             age_min: String(b.age_min),
             age_max: String(b.age_max),
-            price_pence: String(b.price_pence),
-            venue_fee_pence: String(b.venue_fee_pence ?? 0),
+            price_pounds: (b.price_pence / 100).toFixed(2),
+            venue_fee_pounds: ((b.venue_fee_pence ?? 0) / 100).toFixed(2),
             qualifier: b.qualifier ?? '',
           }))
       );
@@ -74,8 +74,8 @@ export default function AdminTicketTypeForm() {
       label: '',
       age_min: '',
       age_max: '',
-      price_pence: '',
-      venue_fee_pence: '0',
+      price_pounds: '',
+      venue_fee_pounds: '0',
       qualifier: '',
     }]);
   }
@@ -92,8 +92,8 @@ export default function AdminTicketTypeForm() {
       label: b.label,
       age_min: parseInt(b.age_min),
       age_max: parseInt(b.age_max),
-      price_pence: parseInt(b.price_pence),
-      venue_fee_pence: b.venue_fee_pence ? parseInt(b.venue_fee_pence) : 0,
+      price_pence: Math.round(parseFloat(b.price_pounds || '0') * 100),
+      venue_fee_pence: b.venue_fee_pounds ? Math.round(parseFloat(b.venue_fee_pounds)) * 100 : 0,
       qualifier: b.qualifier || null,
     }));
 
@@ -188,7 +188,7 @@ export default function AdminTicketTypeForm() {
             <button
               type="button"
               onClick={addBand}
-              className="text-sm text-indigo-600 hover:underline"
+              className="text-sm text-sky-600 hover:underline"
             >
               + Add Band
             </button>
@@ -223,19 +223,21 @@ export default function AdminTicketTypeForm() {
                 />
                 <input
                   type="number"
+                  step="0.01"
                   className="border rounded px-2 py-1 text-sm"
-                  placeholder="Price (pence)"
-                  value={band.price_pence}
-                  onChange={(e) => updateBand(i, 'price_pence', e.target.value)}
+                  placeholder="Price (£)"
+                  value={band.price_pounds}
+                  onChange={(e) => updateBand(i, 'price_pounds', e.target.value)}
                   min="0"
                   required
                 />
                 <input
                   type="number"
+                  step="0.01"
                   className="border rounded px-2 py-1 text-sm"
-                  placeholder="Venue fee (pence)"
-                  value={band.venue_fee_pence}
-                  onChange={(e) => updateBand(i, 'venue_fee_pence', e.target.value)}
+                  placeholder="Venue fee (£)"
+                  value={band.venue_fee_pounds}
+                  onChange={(e) => updateBand(i, 'venue_fee_pounds', e.target.value)}
                   min="0"
                   required
                 />
@@ -257,13 +259,13 @@ export default function AdminTicketTypeForm() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-3">Price and venue fee are entered in pence (e.g. 14900 = £149.00). Venue fee must not exceed price.</p>
+          <p className="text-xs text-gray-400 mt-3">Price and venue fee are entered in pounds (e.g. 149.00 = £149.00). Venue fee must not exceed price.</p>
         </div>
 
         <div className="flex gap-3">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700"
+            className="bg-sky-600 text-white px-6 py-2 rounded font-medium hover:bg-sky-700"
           >
             {isEditing ? 'Save Changes' : 'Create Ticket Type'}
           </button>

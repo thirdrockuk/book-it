@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminEvent } from '../../api/admin';
 import { apiClient } from '../../api/client';
+import MDEditor from '@uiw/react-md-editor';
 
 export default function AdminEventForm() {
   const { id } = useParams<{ id?: string }>();
@@ -68,12 +69,20 @@ export default function AdminEventForm() {
           />
         </Field>
         <Field label="Description">
-          <textarea
-            className="input"
-            rows={4}
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
+          <div data-color-mode="light">
+            <MDEditor
+              value={form.description}
+              onChange={(value) => setForm({ ...form, description: value ?? '' })}
+              height={280}
+              preview="edit"
+              textareaProps={{
+                placeholder: 'Write your event description using Markdown...',
+              }}
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Supports Markdown (headings, bold, lists, links, quotes).
+          </p>
         </Field>
         <Field label="Location">
           <input
@@ -151,7 +160,7 @@ export default function AdminEventForm() {
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded font-medium hover:bg-indigo-700"
+            className="bg-sky-600 text-white px-6 py-2 rounded font-medium hover:bg-sky-700"
           >
             {isEdit ? 'Save Changes' : 'Create Event'}
           </button>
