@@ -20,6 +20,16 @@ A full-stack event booking system built with **FastAPI** (backend) and **React +
 
 ---
 
+### Recent Admin UI/UX Improvements
+
+- **Modern sky color palette** for admin and public UI (Tailwind sky)
+- **Consistent button-styled actions** throughout admin (edit, delete, view, etc.)
+- **Ticket type prices and venue fees entered in pounds** (with decimals) for improved usability
+- **Sentence case** for admin headings and labels
+- **Improved navigation and event-specific finance reports**
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
