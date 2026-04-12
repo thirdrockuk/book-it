@@ -28,6 +28,9 @@ export default function AdminLayout() {
           <Link to="/admin/orders" className="block px-3 py-2 rounded hover:bg-gray-100">
             Orders
           </Link>
+          <Link to="/admin/reports/finance" className="block px-3 py-2 rounded hover:bg-gray-100">
+            Finance Report
+          </Link>
           <Link to="/admin/users" className="block px-3 py-2 rounded hover:bg-gray-100">
             Users
           </Link>

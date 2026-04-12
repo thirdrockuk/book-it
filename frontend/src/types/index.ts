@@ -35,6 +35,7 @@ export interface PriceBand {
   age_min: number;
   age_max: number;
   price_pence: number;
+  venue_fee_pence: number;
   qualifier: string | null;
   created_at: string;
   updated_at: string;
@@ -72,6 +73,50 @@ export interface Order {
   balance_pence: number;
 }
 
+export interface PaginatedOrders {
+  items: Order[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface EventAttendeeReportAttendee {
+  order_id: string;
+  order_number: string;
+  order_status: 'pending' | 'confirmed' | 'cancelled' | 'refunded' | 'expired';
+  booker_name: string;
+  booker_email: string;
+  attendee_name: string;
+  attendee_dob: string;
+  attendee_age: number;
+  ticket_type_id: string;
+  ticket_type_name: string | null;
+  price_band_label: string | null;
+  price_band_qualifier: string | null;
+  price_pence: number;
+  venue_fee_pence: number;
+}
+
+export interface EventAttendeeReportAgeTab {
+  label: string;
+  min_age: number;
+  max_age: number;
+}
+
+export interface EventAttendeeReportSettings {
+  event_id: string;
+  age_tabs: EventAttendeeReportAgeTab[];
+}
+
+export interface EventAttendeeReport {
+  event_id: string;
+  event_title: string;
+  event_starts_at: string;
+  age_tabs: EventAttendeeReportAgeTab[];
+  attendees: EventAttendeeReportAttendee[];
+}
+
 export interface OrderItem {
   id: string;
   order_id: string;
@@ -81,7 +126,11 @@ export interface OrderItem {
   price_band_qualifier: string | null;
   attendee_name: string;
   attendee_dob: string;
+  dietary_requirements: string | null;
+  access_requirements: string | null;
   price_pence: number;
+  standard_price_pence: number | null;
+  venue_fee_pence: number;
   created_at: string;
 }
 

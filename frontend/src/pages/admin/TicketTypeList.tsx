@@ -83,19 +83,21 @@ export default function AdminTicketTypeList() {
 
               {tt.price_bands.length > 0 && (
                 <div className="mt-3 border-t pt-3">
-                  <div className="grid grid-cols-5 gap-2 text-xs font-medium text-gray-500 uppercase mb-1">
+                  <div className="grid grid-cols-6 gap-2 text-xs font-medium text-gray-500 uppercase mb-1">
                     <span>Band</span>
                     <span>Min age</span>
                     <span>Max age</span>
                     <span>Price</span>
+                    <span>Venue fee</span>
                     <span>Qualifier</span>
                   </div>
                   {tt.price_bands.map((band) => (
-                    <div key={band.id} className="grid grid-cols-5 gap-2 text-sm text-gray-700 py-0.5">
+                    <div key={band.id} className="grid grid-cols-6 gap-2 text-sm text-gray-700 py-0.5">
                       <span>{band.label}</span>
                       <span>{band.age_min}</span>
                       <span>{band.age_max}</span>
                       <span>{formatPence(band.price_pence)}</span>
+                      <span>{formatPence(band.venue_fee_pence)}</span>
                       <span>{band.qualifier ?? '—'}</span>
                     </div>
                   ))}

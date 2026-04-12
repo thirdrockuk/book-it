@@ -8,16 +8,17 @@ interface PriceBandInput {
   age_min: string;
   age_max: string;
   price_pence: string;
+  venue_fee_pence: string;
   qualifier: string;
 }
 
 const MAX_AGE = '100';
 
 const DEFAULT_BANDS: PriceBandInput[] = [
-  { label: 'Adult', age_min: '18', age_max: MAX_AGE, price_pence: '', qualifier: '' },
-  { label: 'Child', age_min: '5', age_max: '17', price_pence: '', qualifier: '' },
-  { label: 'Toddler', age_min: '1', age_max: '4', price_pence: '', qualifier: '' },
-  { label: 'Infant', age_min: '0', age_max: '0', price_pence: '0', qualifier: '' },
+  { label: 'Adult', age_min: '18', age_max: MAX_AGE, price_pence: '', venue_fee_pence: '', qualifier: '' },
+  { label: 'Child', age_min: '5', age_max: '17', price_pence: '', venue_fee_pence: '', qualifier: '' },
+  { label: 'Toddler', age_min: '1', age_max: '4', price_pence: '', venue_fee_pence: '', qualifier: '' },
+  { label: 'Infant', age_min: '0', age_max: '0', price_pence: '0', venue_fee_pence: '0', qualifier: '' },
 ];
 
 export default function AdminTicketTypeForm() {
@@ -37,6 +38,7 @@ export default function AdminTicketTypeForm() {
   });
   const [bands, setBands] = useState<PriceBandInput[]>(DEFAULT_BANDS);
   const [initialised, setInitialised] = useState(!isEditing);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     if (existing && !initialised) {
@@ -55,6 +57,7 @@ export default function AdminTicketTypeForm() {
             age_min: String(b.age_min),
             age_max: String(b.age_max),
             price_pence: String(b.price_pence),
+            venue_fee_pence: String(b.venue_fee_pence ?? 0),
             qualifier: b.qualifier ?? '',
           }))
       );
@@ -67,7 +70,14 @@ export default function AdminTicketTypeForm() {
   }
 
   function addBand() {
-    setBands((prev) => [...prev, { label: '', age_min: '', age_max: '', price_pence: '' }]);
+    setBands((prev) => [...prev, {
+      label: '',
+      age_min: '',
+      age_max: '',
+      price_pence: '',
+      venue_fee_pence: '0',
+      qualifier: '',
+    }]);
   }
 
   function removeBand(index: number) {
@@ -76,26 +86,43 @@ export default function AdminTicketTypeForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitError(null);
+
+    const parsedBands = bands.map((b) => ({
+      label: b.label,
+      age_min: parseInt(b.age_min),
+      age_max: parseInt(b.age_max),
+      price_pence: parseInt(b.price_pence),
+      venue_fee_pence: b.venue_fee_pence ? parseInt(b.venue_fee_pence) : 0,
+      qualifier: b.qualifier || null,
+    }));
+
+    const invalidVenueFee = parsedBands.find(
+      (b) => Number.isFinite(b.price_pence) && Number.isFinite(b.venue_fee_pence) && b.venue_fee_pence > b.price_pence
+    );
+    if (invalidVenueFee) {
+      setSubmitError('Venue fee must not exceed the ticket price in any band.');
+      return;
+    }
+
     const payload = {
       name: form.name,
       description: form.description,
       inventory_total: form.inventory_total ? parseInt(form.inventory_total) : null,
       is_active: form.is_active,
       sort_order: parseInt(form.sort_order),
-      price_bands: bands.map((b) => ({
-        label: b.label,
-        age_min: parseInt(b.age_min),
-        age_max: parseInt(b.age_max),
-        price_pence: parseInt(b.price_pence),
-        qualifier: b.qualifier || null,
-      })),
+      price_bands: parsedBands,
     };
-    if (isEditing) {
-      await apiClient.put(`/api/admin/events/${eventId}/ticket-types/${tid}`, payload);
-    } else {
-      await apiClient.post(`/api/admin/events/${eventId}/ticket-types`, payload);
+    try {
+      if (isEditing) {
+        await apiClient.put(`/api/admin/events/${eventId}/ticket-types/${tid}`, payload);
+      } else {
+        await apiClient.post(`/api/admin/events/${eventId}/ticket-types`, payload);
+      }
+      navigate(`/admin/events/${eventId}/ticket-types`);
+    } catch {
+      setSubmitError('Unable to save ticket type. Please check your price band values.');
     }
-    navigate(`/admin/events/${eventId}/ticket-types`);
   }
 
   if (isEditing && !initialised) return <div className="text-gray-500">Loading…</div>;
@@ -106,6 +133,9 @@ export default function AdminTicketTypeForm() {
         {isEditing ? 'Edit Ticket Type' : 'New Ticket Type'}
       </h1>
       <form onSubmit={handleSubmit} className="space-y-6">
+        {submitError && (
+          <p className="text-sm text-red-600">{submitError}</p>
+        )}
         <div className="bg-white border rounded-lg p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">Ticket Type Details</h2>
           <div>
@@ -165,7 +195,7 @@ export default function AdminTicketTypeForm() {
           </div>
           <div className="space-y-3">
             {bands.map((band, i) => (
-              <div key={i} className="grid grid-cols-6 gap-2 items-center">
+              <div key={i} className="grid grid-cols-7 gap-2 items-center">
                 <input
                   className="border rounded px-2 py-1 text-sm col-span-1"
                   placeholder="Label"
@@ -200,6 +230,15 @@ export default function AdminTicketTypeForm() {
                   min="0"
                   required
                 />
+                <input
+                  type="number"
+                  className="border rounded px-2 py-1 text-sm"
+                  placeholder="Venue fee (pence)"
+                  value={band.venue_fee_pence}
+                  onChange={(e) => updateBand(i, 'venue_fee_pence', e.target.value)}
+                  min="0"
+                  required
+                />
                 <select
                   className="border rounded px-2 py-1 text-sm"
                   value={band.qualifier}
@@ -218,7 +257,7 @@ export default function AdminTicketTypeForm() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-3">Prices are entered in pence (e.g. 14900 = £149.00)</p>
+          <p className="text-xs text-gray-400 mt-3">Price and venue fee are entered in pence (e.g. 14900 = £149.00). Venue fee must not exceed price.</p>
         </div>
 
         <div className="flex gap-3">

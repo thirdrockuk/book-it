@@ -13,7 +13,10 @@ class OrderItem(SQLModel, table=True):
     price_band_id: uuid.UUID = Field(foreign_key="price_bands.id")
     attendee_name: str
     attendee_dob: date
+    dietary_requirements: Optional[str] = None
+    access_requirements: Optional[str] = None
     price_pence: int
+    venue_fee_pence: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     order: Optional["Order"] = Relationship(back_populates="order_items")

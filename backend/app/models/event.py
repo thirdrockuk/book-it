@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional, List
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Column, JSON
 
 
 class EventStatus(str, Enum):
@@ -24,6 +25,10 @@ class Event(SQLModel, table=True):
     sales_start_at: Optional[datetime] = None
     sales_end_at: Optional[datetime] = None
     banner_image_url: Optional[str] = None
+    attendee_report_age_tabs: List[dict] = Field(
+        default_factory=list,
+        sa_column=Column(JSON, nullable=False),
+    )
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

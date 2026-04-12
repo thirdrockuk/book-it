@@ -76,7 +76,10 @@ def create_order(session: Session, data: OrderCreate) -> Order:
             price_band_id=price_band.id,
             attendee_name=attendee.attendee_name,
             attendee_dob=attendee.attendee_dob,
+            dietary_requirements=attendee.dietary_requirements,
+            access_requirements=attendee.access_requirements,
             price_pence=price_band.price_pence,
+            venue_fee_pence=price_band.venue_fee_pence,
         )
         session.add(item)
         total_pence += price_band.price_pence

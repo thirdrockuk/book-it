@@ -44,7 +44,19 @@ export default function OrderSummary({ attendees, ticketTypes, eventStart }: Pro
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} className="border-b">
-              <td className="py-2">{r.attendee.attendee_name || '—'}</td>
+              <td className="py-2">
+                <span>{r.attendee.attendee_name || '—'}</span>
+                {r.attendee.dietary_requirements?.trim() && (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    <span className="font-medium">Dietary:</span> {r.attendee.dietary_requirements.trim()}
+                  </p>
+                )}
+                {r.attendee.access_requirements?.trim() && (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    <span className="font-medium">Access:</span> {r.attendee.access_requirements.trim()}
+                  </p>
+                )}
+              </td>
               <td className="py-2">{r.tt?.name ?? '—'}</td>
               <td className="py-2">{r.band?.label ?? '—'}</td>
               <td className="py-2 text-right">{formatPence(r.price)}</td>

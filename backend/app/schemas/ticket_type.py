@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 
 class PriceBandBase(BaseModel):
@@ -9,7 +9,18 @@ class PriceBandBase(BaseModel):
     age_min: int
     age_max: int
     price_pence: int
+    venue_fee_pence: int = 0
     qualifier: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_venue_fee(self):
+        if self.price_pence < 0:
+            raise ValueError("price_pence must be >= 0")
+        if self.venue_fee_pence < 0:
+            raise ValueError("venue_fee_pence must be >= 0")
+        if self.venue_fee_pence > self.price_pence:
+            raise ValueError("venue_fee_pence must be less than or equal to price_pence")
+        return self
 
 
 class PriceBandCreate(PriceBandBase):

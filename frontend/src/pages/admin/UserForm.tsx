@@ -10,7 +10,7 @@ export default function AdminUserForm() {
   const isEditing = Boolean(id);
   const qc = useQueryClient();
 
-  const { data: existing, isLoading } = useAdminUser(id);
+  const { data: existing } = useAdminUser(id);
 
   const [form, setForm] = useState({
     email: '',

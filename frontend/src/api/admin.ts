@@ -1,6 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from './client';
-import type { Event, Order, DashboardStats, TicketType, AdminUser } from '../types';
+import type {
+  Event,
+  Order,
+  DashboardStats,
+  TicketType,
+  AdminUser,
+  PaginatedOrders,
+  EventAttendeeReportAgeTab,
+  EventAttendeeReport,
+  EventAttendeeReportSettings,
+} from '../types';
 
 export function useAdminEvents() {
   return useQuery<Event[]>({
@@ -23,14 +33,68 @@ export function useAdminEvent(id: string | undefined) {
   });
 }
 
-export function useAdminOrders() {
+export function useAdminOrders(sortDirection: 'desc' | 'asc' = 'desc') {
   return useQuery<Order[]>({
-    queryKey: ['admin', 'orders'],
+    queryKey: ['admin', 'orders', sortDirection],
     queryFn: async () => {
-      const res = await apiClient.get<Order[]>('/api/admin/orders');
+      const res = await apiClient.get<Order[]>('/api/admin/orders', {
+        params: { sort_dir: sortDirection },
+      });
       return res.data;
     },
   });
+}
+
+export function useAdminOrdersPage(
+  page: number,
+  pageSize: 10 | 20 | 50,
+  sortDirection: 'desc' | 'asc' = 'desc'
+) {
+  return useQuery<PaginatedOrders>({
+    queryKey: ['admin', 'orders', 'paged', page, pageSize, sortDirection],
+    queryFn: async () => {
+      const res = await apiClient.get<PaginatedOrders>('/api/admin/orders/paginated', {
+        params: {
+          page,
+          page_size: pageSize,
+          sort_dir: sortDirection,
+        },
+      });
+      return res.data;
+    },
+  });
+}
+
+export function useAdminEventAttendeeReport(
+  eventId: string | undefined,
+  includePending = false
+) {
+  return useQuery<EventAttendeeReport>({
+    queryKey: ['admin', 'events', eventId, 'attendee-report', includePending],
+    queryFn: async () => {
+      const res = await apiClient.get<EventAttendeeReport>(
+        `/api/admin/events/${eventId}/attendee-report`,
+        {
+          params: { include_pending: includePending },
+        }
+      );
+      return res.data;
+    },
+    enabled: Boolean(eventId),
+  });
+}
+
+export async function updateAdminEventAttendeeReportSettings(
+  eventId: string,
+  ageTabs: EventAttendeeReportAgeTab[]
+): Promise<EventAttendeeReportSettings> {
+  const res = await apiClient.put<EventAttendeeReportSettings>(
+    `/api/admin/events/${eventId}/attendee-report/settings`,
+    {
+      age_tabs: ageTabs,
+    }
+  );
+  return res.data;
 }
 
 export function useAdminOrder(id: string | undefined) {
@@ -106,4 +170,37 @@ export async function recordPayment(
 
 export async function deletePayment(orderId: string, paymentId: string): Promise<void> {
   await apiClient.delete(`/api/admin/orders/${orderId}/payments/${paymentId}`);
+}
+
+export async function updateOrderItemPrice(
+  orderId: string,
+  itemId: string,
+  pricePence: number
+): Promise<Order> {
+  const res = await apiClient.put<Order>(`/api/admin/orders/${orderId}/items/${itemId}/price`, {
+    price_pence: pricePence,
+  });
+  return res.data;
+}
+
+export async function resetOrderItemPrice(orderId: string, itemId: string): Promise<Order> {
+  const res = await apiClient.post<Order>(`/api/admin/orders/${orderId}/items/${itemId}/price/reset`);
+  return res.data;
+}
+
+export async function updateOrderItemRequirements(
+  orderId: string,
+  itemId: string,
+  data: { dietary_requirements: string | null; access_requirements: string | null }
+): Promise<Order> {
+  const res = await apiClient.put<Order>(
+    `/api/admin/orders/${orderId}/items/${itemId}/requirements`,
+    data
+  );
+  return res.data;
+}
+
+export async function cancelAdminOrder(orderId: string): Promise<Order> {
+  const res = await apiClient.post<Order>(`/api/admin/orders/${orderId}/cancel`);
+  return res.data;
 }

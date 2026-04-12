@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAdminOrder } from '../../api/admin';
-import { recordPayment, deletePayment } from '../../api/admin';
-import { apiClient } from '../../api/client';
+import {
+  cancelAdminOrder,
+  recordPayment,
+  deletePayment,
+  updateOrderItemPrice,
+  resetOrderItemPrice,
+  updateOrderItemRequirements,
+} from '../../api/admin';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatPence } from '../../utils/currency';
 
@@ -29,6 +35,12 @@ export default function AdminOrderDetail() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [priceDraftByItemId, setPriceDraftByItemId] = useState<Record<string, string>>({});
+  const [priceErrorByItemId, setPriceErrorByItemId] = useState<Record<string, string>>({});
+  const [savingPriceItemId, setSavingPriceItemId] = useState<string | null>(null);
+  const [reqDraftByItemId, setReqDraftByItemId] = useState<Record<string, { dietary: string; access: string }>>({});
+  const [reqErrorByItemId, setReqErrorByItemId] = useState<Record<string, string>>({});
+  const [savingReqItemId, setSavingReqItemId] = useState<string | null>(null);
 
   function handleCopyLink() {
     const url = `${window.location.origin}/booking/${order?.view_token}`;
@@ -40,8 +52,13 @@ export default function AdminOrderDetail() {
 
   async function handleCancel() {
     if (!confirm('Cancel this order?')) return;
-    await apiClient.post(`/api/admin/orders/${id}/cancel`);
-    qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+    try {
+      await cancelAdminOrder(id!);
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    } catch {
+      alert('Failed to cancel order');
+    }
   }
 
   async function handleRecordPayment(e: React.FormEvent) {
@@ -72,8 +89,101 @@ export default function AdminOrderDetail() {
     qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
   }
 
+  function getPriceDraft(itemId: string, fallbackPence: number): string {
+    if (priceDraftByItemId[itemId] != null) {
+      return priceDraftByItemId[itemId];
+    }
+    return (fallbackPence / 100).toFixed(2);
+  }
+
+  async function handleUpdateItemPrice(itemId: string, fallbackPence: number) {
+    const draft = getPriceDraft(itemId, fallbackPence).trim();
+    const parsed = Number.parseFloat(draft);
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      setPriceErrorByItemId((prev) => ({ ...prev, [itemId]: 'Enter a valid price' }));
+      return;
+    }
+
+    setSavingPriceItemId(itemId);
+    setPriceErrorByItemId((prev) => ({ ...prev, [itemId]: '' }));
+
+    try {
+      await updateOrderItemPrice(id!, itemId, Math.round(parsed * 100));
+      setPriceDraftByItemId((prev) => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
+      setPriceErrorByItemId((prev) => ({ ...prev, [itemId]: '' }));
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+    } catch (error) {
+      const apiError = error as { response?: { data?: { detail?: string } } };
+      const detail = apiError.response?.data?.detail;
+      setPriceErrorByItemId((prev) => ({
+        ...prev,
+        [itemId]: detail || 'Failed to update attendee price',
+      }));
+    } finally {
+      setSavingPriceItemId(null);
+    }
+  }
+
+  function getReqDraft(itemId: string, dietary: string | null, access: string | null) {
+    if (reqDraftByItemId[itemId] != null) return reqDraftByItemId[itemId];
+    return { dietary: dietary ?? '', access: access ?? '' };
+  }
+
+  async function handleUpdateItemRequirements(itemId: string, dietary: string | null, access: string | null) {
+    const draft = getReqDraft(itemId, dietary, access);
+    setSavingReqItemId(itemId);
+    setReqErrorByItemId((prev) => ({ ...prev, [itemId]: '' }));
+    try {
+      await updateOrderItemRequirements(id!, itemId, {
+        dietary_requirements: draft.dietary.trim() || null,
+        access_requirements: draft.access.trim() || null,
+      });
+      setReqDraftByItemId((prev) => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+    } catch {
+      setReqErrorByItemId((prev) => ({ ...prev, [itemId]: 'Failed to update requirements' }));
+    } finally {
+      setSavingReqItemId(null);
+    }
+  }
+
+  async function handleResetItemPrice(itemId: string) {
+    setSavingPriceItemId(itemId);
+    setPriceErrorByItemId((prev) => ({ ...prev, [itemId]: '' }));
+
+    try {
+      await resetOrderItemPrice(id!, itemId);
+      setPriceDraftByItemId((prev) => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+    } catch (error) {
+      const apiError = error as { response?: { data?: { detail?: string } } };
+      const detail = apiError.response?.data?.detail;
+      setPriceErrorByItemId((prev) => ({
+        ...prev,
+        [itemId]: detail || 'Failed to reset attendee price',
+      }));
+    } finally {
+      setSavingPriceItemId(null);
+    }
+  }
+
   if (isLoading) return <div className="text-gray-500">Loading…</div>;
   if (!order) return <div className="text-red-500">Order not found.</div>;
+
+  const canEditAttendeePrices = order.status === 'pending' || order.status === 'confirmed';
+  const canEditRequirements = order.status === 'pending' || order.status === 'confirmed';
 
   return (
     <div className="max-w-2xl">
@@ -140,12 +250,15 @@ export default function AdminOrderDetail() {
               <th className="pb-2">Name</th>
               <th className="pb-2">DOB</th>
               <th className="pb-2">Band</th>
+              <th className="pb-2 text-right">Venue Fee</th>
               <th className="pb-2 text-right">Price</th>
+              <th className="pb-2 text-right">Set Price (£)</th>
             </tr>
           </thead>
           <tbody>
             {order.order_items.map((item) => (
-              <tr key={item.id} className="border-b">
+              <React.Fragment key={item.id}>
+              <tr className="border-b">
                 <td className="py-2">{item.attendee_name}</td>
                 <td className="py-2 text-gray-500">{item.attendee_dob}</td>
                 <td className="py-2 text-gray-500">
@@ -156,17 +269,136 @@ export default function AdminOrderDetail() {
                     </span>
                   )}
                 </td>
+                <td className="py-2 text-right text-gray-500">{formatPence(item.venue_fee_pence)}</td>
                 <td className="py-2 text-right">{formatPence(item.price_pence)}</td>
+                <td className="py-2 text-right">
+                  {canEditAttendeePrices ? (
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center justify-end gap-2">
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={getPriceDraft(item.id, item.price_pence)}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setPriceDraftByItemId((prev) => ({ ...prev, [item.id]: value }));
+                            setPriceErrorByItemId((prev) => ({ ...prev, [item.id]: '' }));
+                          }}
+                          className="w-24 border rounded px-2 py-1 text-xs text-right"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemPrice(item.id, item.price_pence)}
+                          disabled={savingPriceItemId === item.id}
+                          className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          {savingPriceItemId === item.id ? 'Saving…' : 'Save'}
+                        </button>
+                        {item.standard_price_pence != null && item.price_pence !== item.standard_price_pence && (
+                          <button
+                            type="button"
+                            onClick={() => handleResetItemPrice(item.id)}
+                            disabled={savingPriceItemId === item.id}
+                            className="text-xs px-2 py-1 rounded border border-indigo-300 text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
+                      {item.standard_price_pence != null && (
+                        <p className="text-[11px] text-gray-500">Std: {formatPence(item.standard_price_pence)}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400">Locked</span>
+                  )}
+                  {priceErrorByItemId[item.id] && (
+                    <p className="text-xs text-red-600 mt-1">{priceErrorByItemId[item.id]}</p>
+                  )}
+                </td>
               </tr>
+              <tr key={`${item.id}-req`} className="border-b bg-gray-50">
+                <td colSpan={6} className="py-2 px-0">
+                  <div className="flex flex-wrap gap-3 items-end">
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-xs text-gray-500 mb-0.5">Dietary requirements</label>
+                      {canEditRequirements ? (
+                        <textarea
+                          rows={1}
+                          className="w-full border rounded px-2 py-1 text-xs resize-none"
+                          value={getReqDraft(item.id, item.dietary_requirements, item.access_requirements).dietary}
+                          onChange={(e) =>
+                            setReqDraftByItemId((prev) => ({
+                              ...prev,
+                              [item.id]: {
+                                ...getReqDraft(item.id, item.dietary_requirements, item.access_requirements),
+                                dietary: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="None"
+                        />
+                      ) : (
+                        <p className="text-xs text-gray-600">{item.dietary_requirements || '—'}</p>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-[180px]">
+                      <label className="block text-xs text-gray-500 mb-0.5">Access requirements</label>
+                      {canEditRequirements ? (
+                        <textarea
+                          rows={1}
+                          className="w-full border rounded px-2 py-1 text-xs resize-none"
+                          value={getReqDraft(item.id, item.dietary_requirements, item.access_requirements).access}
+                          onChange={(e) =>
+                            setReqDraftByItemId((prev) => ({
+                              ...prev,
+                              [item.id]: {
+                                ...getReqDraft(item.id, item.dietary_requirements, item.access_requirements),
+                                access: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="None"
+                        />
+                      ) : (
+                        <p className="text-xs text-gray-600">{item.access_requirements || '—'}</p>
+                      )}
+                    </div>
+                    {canEditRequirements && (
+                      <div className="flex flex-col gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateItemRequirements(item.id, item.dietary_requirements, item.access_requirements)}
+                          disabled={savingReqItemId === item.id}
+                          className="text-xs px-2 py-1 rounded border border-gray-300 hover:bg-white disabled:opacity-50"
+                        >
+                          {savingReqItemId === item.id ? 'Saving…' : 'Save'}
+                        </button>
+                        {reqErrorByItemId[item.id] && (
+                          <p className="text-xs text-red-600">{reqErrorByItemId[item.id]}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </td>
+              </tr>
+              </React.Fragment>
             ))}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3} className="pt-3 font-semibold">Total</td>
+              <td colSpan={4} className="pt-3 font-semibold">Total</td>
               <td className="pt-3 font-semibold text-right">{formatPence(order.total_pence)}</td>
+              <td />
             </tr>
           </tfoot>
         </table>
+        {!canEditAttendeePrices && (
+          <p className="text-xs text-gray-500 mt-3">
+            Attendee prices can only be edited while an order is pending or confirmed.
+          </p>
+        )}
       </div>
 
       {/* Payments */}

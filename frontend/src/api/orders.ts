@@ -18,7 +18,14 @@ export async function createOrder(data: {
   booker_name: string;
   booker_email: string;
   booker_phone?: string;
-  attendees: { ticket_type_id: string; attendee_name: string; attendee_dob: string }[];
+  attendees: {
+    ticket_type_id: string;
+    attendee_name: string;
+    attendee_dob: string;
+    is_student?: boolean;
+    dietary_requirements?: string;
+    access_requirements?: string;
+  }[];
 }): Promise<Order> {
   const res = await apiClient.post<Order>('/api/orders', data);
   return res.data;

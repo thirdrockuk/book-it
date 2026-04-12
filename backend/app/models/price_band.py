@@ -13,6 +13,7 @@ class PriceBand(SQLModel, table=True):
     age_min: int
     age_max: int
     price_pence: int
+    venue_fee_pence: int = 0
     qualifier: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

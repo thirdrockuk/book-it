@@ -67,6 +67,12 @@ export default function AdminEventList() {
                     >
                       Ticket Types
                     </Link>
+                    <Link
+                      to={`/admin/events/${event.id}/attendee-report`}
+                      className="text-blue-600 hover:underline text-xs"
+                    >
+                      Attendee Report
+                    </Link>
                     <button
                       onClick={() => handleDelete(event.id)}
                       className="text-red-500 hover:underline text-xs"

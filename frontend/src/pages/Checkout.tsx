@@ -50,7 +50,14 @@ export default function Checkout() {
 
   const [step, setStep] = useState<Step>(1);
   const [attendees, setAttendees] = useState<AttendeeInput[]>([
-    { attendee_name: '', attendee_dob: '', ticket_type_id: '', is_student: false },
+    {
+      attendee_name: '',
+      attendee_dob: '',
+      ticket_type_id: '',
+      is_student: false,
+      dietary_requirements: '',
+      access_requirements: '',
+    },
   ]);
   const [booker, setBooker] = useState<BookerDetails>({
     booker_name: '',
@@ -78,7 +85,14 @@ export default function Checkout() {
   function addAttendee() {
     setAttendees((prev) => [
       ...prev,
-      { attendee_name: '', attendee_dob: '', ticket_type_id: '', is_student: false },
+      {
+        attendee_name: '',
+        attendee_dob: '',
+        ticket_type_id: '',
+        is_student: false,
+        dietary_requirements: '',
+        access_requirements: '',
+      },
     ]);
   }
 
@@ -118,6 +132,8 @@ export default function Checkout() {
           attendee_name: a.attendee_name,
           attendee_dob: a.attendee_dob,
           is_student: a.is_student,
+          dietary_requirements: a.dietary_requirements?.trim() || undefined,
+          access_requirements: a.access_requirements?.trim() || undefined,
         })),
       });
       const confirmed = await confirmOrder(order.id);

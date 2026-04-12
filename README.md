@@ -7,11 +7,13 @@ A full-stack event booking system built with **FastAPI** (backend) and **React +
 ## Features
 
 - **Events** with ticket types and age-banded price bands
+- **Venue fee tracking** per price band, snapshotted to each booked attendee for reporting
 - **Student qualifier**: price bands can be marked as student-rate; attendees self-declare student status at checkout
 - **Inventory management** per ticket type (pending orders hold inventory for 15 minutes)
 - **Multi-step checkout**: attendees → booker details → review & pay
 - **Automatic price resolution** from attendee date of birth at event start date
 - **Admin panel** with JWT authentication: manage events, ticket types, orders, admin users
+- **Finance report** in admin: bookings with delegates plus price, paid, outstanding, and venue fee columns
 - **Offline payment recording**: log cash, bank transfer, cheque, or other payments against an order; paid/outstanding totals updated in real time
 - **Secure booking view links**: each order has a unique token URL that bookers can use to view their booking, payments, and balance without logging in
 - **Email confirmations** via [Resend](https://resend.com) (optional, includes booking view link)
@@ -179,8 +181,12 @@ POST   /api/admin/events/{id}/ticket-types               Create ticket type
 PUT    /api/admin/events/{id}/ticket-types/{tid}         Update ticket type
 DELETE /api/admin/events/{id}/ticket-types/{tid}         Delete ticket type
 GET    /api/admin/events/{id}/orders                     Orders for an event
+GET    /api/admin/events/{id}/attendee-report            Event attendee report (age-at-event rows)
+PUT    /api/admin/events/{id}/attendee-report/settings   Save attendee report age-tab settings
 GET    /api/admin/orders                                 All orders (includes paid/balance totals)
 GET    /api/admin/orders/{id}                            Order detail
+PUT    /api/admin/orders/{id}/items/{itemId}/price       Override attendee price and recalc order total
+POST   /api/admin/orders/{id}/items/{itemId}/price/reset Reset attendee price to standard band price
 POST   /api/admin/orders/{id}/cancel                     Cancel order
 GET    /api/admin/orders/{id}/payments                   Payments on an order
 POST   /api/admin/orders/{id}/payments                   Record a payment
@@ -221,6 +227,11 @@ Human-readable format: `BK-{YEAR}-{SEQUENCE}` e.g. `BK-2026-00142`
 
 ### Payment
 Payments are recorded manually by admin staff against a confirmed order. Any number of payments can be added until the balance is zero. Supported methods: `cash`, `bank_transfer`, `cheque`, `other`. The paid total and outstanding balance are calculated on the fly from the sum of succeeded payments.
+
+### Venue fee
+Each price band has a `venue_fee_pence` value (the portion owed to the venue). When an order is created, the venue fee is copied to each `order_item` so historical reports remain accurate even if ticket pricing changes later.
+
+Manual attendee price overrides in admin can be set as low as `0`, even if this makes the event fee (`price - venue fee`) negative.
 
 To integrate Stripe or another gateway, add a payment provider in `backend/app/services/orders.py` and record the resulting payment via the existing `Payment` model.
 

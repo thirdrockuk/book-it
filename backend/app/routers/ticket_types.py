@@ -67,6 +67,7 @@ def create_ticket_type(
             age_min=band_data.age_min,
             age_max=band_data.age_max,
             price_pence=band_data.price_pence,
+            venue_fee_pence=band_data.venue_fee_pence,
             qualifier=band_data.qualifier,
         )
         session.add(band)
@@ -117,6 +118,7 @@ def update_ticket_type(
                 existing = existing_by_key[key]
                 existing.label = band_data.label
                 existing.price_pence = band_data.price_pence
+                existing.venue_fee_pence = band_data.venue_fee_pence
                 existing.updated_at = datetime.now(timezone.utc)
                 session.add(existing)
             else:
@@ -126,6 +128,7 @@ def update_ticket_type(
                     age_min=band_data.age_min,
                     age_max=band_data.age_max,
                     price_pence=band_data.price_pence,
+                    venue_fee_pence=band_data.venue_fee_pence,
                     qualifier=band_data.qualifier,
                 ))
 

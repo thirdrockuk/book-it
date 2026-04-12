@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { TicketType, PriceBand } from '../types';
 import { ageAtEvent } from '../utils/age';
 import { formatPence } from '../utils/currency';
@@ -7,6 +8,8 @@ export interface AttendeeInput {
   attendee_dob: string;
   ticket_type_id: string;
   is_student: boolean;
+  dietary_requirements?: string;
+  access_requirements?: string;
 }
 
 interface Props {
@@ -72,6 +75,9 @@ export default function AttendeeForm({
   const selectedTicketType = ticketTypes.find((t) => t.id === attendee.ticket_type_id);
   const showStudentCheckbox = hasStudentBandForAge(selectedTicketType, attendee.attendee_dob, eventStart);
   const resolvedBand = resolvePriceBand(selectedTicketType, attendee.attendee_dob, eventStart, attendee.is_student);
+  const [showRequirements, setShowRequirements] = useState(
+    Boolean(attendee.dietary_requirements || attendee.access_requirements)
+  );
 
   function update(field: keyof AttendeeInput, value: string) {
     onChange(index, { ...attendee, [field]: value });
@@ -148,6 +154,43 @@ export default function AttendeeForm({
             />
             I am in full-time education (student rate applies)
           </label>
+        </div>
+      )}
+
+      <div className="mt-3">
+        <button
+          type="button"
+          onClick={() => setShowRequirements((prev) => !prev)}
+          className="text-xs text-indigo-600 hover:underline"
+        >
+          {showRequirements
+            ? 'Hide dietary/access requirements'
+            : 'Add dietary/access requirements (optional)'}
+        </button>
+      </div>
+
+      {showRequirements && (
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Dietary requirements</label>
+            <textarea
+              rows={2}
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={attendee.dietary_requirements ?? ''}
+              onChange={(e) => update('dietary_requirements', e.target.value)}
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Access requirements</label>
+            <textarea
+              rows={2}
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={attendee.access_requirements ?? ''}
+              onChange={(e) => update('access_requirements', e.target.value)}
+              placeholder="Optional"
+            />
+          </div>
         </div>
       )}
 
